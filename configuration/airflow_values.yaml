@@ -46,10 +46,10 @@ airflowHome: /opt/airflow
 defaultAirflowRepository: apache/airflow
 
 # Default airflow tag to deploy
-defaultAirflowTag: "2.2.3"
+defaultAirflowTag: "2.2.4"
 
 # Airflow version (Used to make some decisions based on Airflow Version being deployed)
-airflowVersion: "2.2.3"
+airflowVersion: "2.2.4"
 
 # Images
 images:
@@ -78,7 +78,7 @@ images:
     pullPolicy: IfNotPresent
   redis:
     repository: redis
-    tag: 6-buster
+    tag: 6-bullseye
     pullPolicy: IfNotPresent
   pgbouncer:
     repository: apache/airflow
@@ -90,7 +90,7 @@ images:
     pullPolicy: IfNotPresent
   gitSync:
     repository: k8s.gcr.io/git-sync/git-sync
-    tag: v3.3.0
+    tag: v3.4.0
     pullPolicy: IfNotPresent
 
 # Select certain nodes for airflow pods.
@@ -262,7 +262,7 @@ enableBuiltInSecretEnvVars:
 #          The value associated with those keys must be a string (can be templated)
 extraSecrets: {}
 # eg:
-extraSecrets:
+# extraSecrets:
 #   '{{ .Release.Name }}-airflow-connections':
 #     type: 'Opaque'
 #     data: |
@@ -300,8 +300,6 @@ extraEnv: ~
 # Extra envFrom 'items' that will be added to the definition of airflow containers
 # A string is expected (can be templated).
 extraEnvFrom: ~
-# - configMap:
-# name: aiflow-connections
 # eg:
 # extraEnvFrom: |
 #   - secretRef:
@@ -516,6 +514,7 @@ workers:
 
   # Select certain nodes for airflow worker pods.
   nodeSelector: {}
+  priorityClassName: ~
   affinity: {}
   # default worker affinity is:
   #  podAntiAffinity:
@@ -564,6 +563,23 @@ scheduler:
     timeoutSeconds: 20
     failureThreshold: 5
     periodSeconds: 60
+    command:
+      - sh
+      - -c
+      - |
+        CONNECTION_CHECK_MAX_COUNT=0 exec /entrypoint python -Wignore -c "
+        import os
+        os.environ['AIRFLOW__CORE__LOGGING_LEVEL'] = 'ERROR'
+        os.environ['AIRFLOW__LOGGING__LOGGING_LEVEL'] = 'ERROR'
+        from airflow.jobs.scheduler_job import SchedulerJob
+        from airflow.utils.db import create_session
+        from airflow.utils.net import get_hostname
+        import sys
+        with create_session() as session:
+            job = session.query(SchedulerJob).filter_by(hostname=get_hostname()).order_by(
+                SchedulerJob.latest_heartbeat.desc()).limit(1).first()
+        sys.exit(0 if job.is_alive() else 1)"
+
   # Airflow 2.0 allows users to run multiple schedulers,
   # However this feature is only recommended for MySQL 8+ and Postgres
   replicas: 1
@@ -640,6 +656,8 @@ scheduler:
   #      weight: 100
   tolerations: []
 
+  priorityClassName: ~
+
   podAnnotations: {}
 
   logGroomerSidecar:
@@ -661,6 +679,30 @@ scheduler:
 
 # Airflow create user job settings
 createUserJob:
+  # Command to use when running the create user job (templated).
+  command: ~
+  # Args to use when running the create user job (templated).
+  args:
+    - "bash"
+    - "-c"
+    # The format below is necessary to get `helm lint` happy
+    - |-
+      exec \
+      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "users create" "create_user" }} "$@"
+    - --
+    - "-r"
+    - "{{ .Values.webserver.defaultUser.role }}"
+    - "-u"
+    - "{{ .Values.webserver.defaultUser.username }}"
+    - "-e"
+    - "{{ .Values.webserver.defaultUser.email }}"
+    - "-f"
+    - "{{ .Values.webserver.defaultUser.firstName }}"
+    - "-l"
+    - "{{ .Values.webserver.defaultUser.lastName }}"
+    - "-p"
+    - "{{ .Values.webserver.defaultUser.password }}"
+
   # Annotations on the create user job pod
   annotations: {}
   # jobAnnotations are annotations on the create user job
@@ -707,6 +749,17 @@ createUserJob:
 
 # Airflow database migration job settings
 migrateDatabaseJob:
+  # Command to use when running the migrate database job (templated).
+  command: ~
+  # Args to use when running the migrate database job (templated).
+  args:
+    - "bash"
+    - "-c"
+    # The format below is necessary to get `helm lint` happy
+    - |-
+      exec \
+      airflow {{ semverCompare ">=2.0.0" .Values.airflowVersion | ternary "db upgrade" "upgradedb" }}
+
   # Annotations on the database migration pod
   annotations: {}
   # jobAnnotations are annotations on the database migration job
@@ -868,6 +921,7 @@ webserver:
 
   # Select certain nodes for airflow webserver pods.
   nodeSelector: {}
+  priorityClassName: ~
   affinity: {}
   # default webserver affinity is:
   #  podAntiAffinity:
@@ -906,6 +960,26 @@ triggerer:
     timeoutSeconds: 20
     failureThreshold: 5
     periodSeconds: 60
+    command:
+      - sh
+      - -c
+      - |
+        CONNECTION_CHECK_MAX_COUNT=0 exec /entrypoint python -Wignore -c "
+        import os
+        os.environ['AIRFLOW__CORE__LOGGING_LEVEL'] = 'ERROR'
+        os.environ['AIRFLOW__LOGGING__LOGGING_LEVEL'] = 'ERROR'
+
+        from airflow.jobs.triggerer_job import TriggererJob
+        from airflow.utils.db import create_session
+        from airflow.utils.net import get_hostname
+        import sys
+
+        with create_session() as session:
+            job = session.query(TriggererJob).filter_by(hostname=get_hostname()).order_by(
+                TriggererJob.latest_heartbeat.desc()).limit(1).first()
+
+        sys.exit(0 if job.is_alive() else 1)
+        "
 
   # Create ServiceAccount
   serviceAccount:
@@ -961,6 +1035,8 @@ triggerer:
   #        topologyKey: kubernetes.io/hostname
   #      weight: 100
   tolerations: []
+
+  priorityClassName: ~
 
   podAnnotations: {}
 
@@ -1051,6 +1127,8 @@ flower:
   affinity: {}
   tolerations: []
 
+  priorityClassName: ~
+
   podAnnotations: {}
 
 # Statsd settings
@@ -1091,6 +1169,8 @@ statsd:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+
+  priorityClassName: ~
 
   # Additional mappings for statsd exporter.
   extraMappings: []
@@ -1197,6 +1277,8 @@ pgbouncer:
   nodeSelector: {}
   affinity: {}
   tolerations: []
+
+  priorityClassName: ~
 
   uid: 65534
 
@@ -1320,6 +1402,8 @@ cleanup:
   affinity: {}
   tolerations: []
 
+  podAnnotations: {}
+
   resources: {}
   #  limits:
   #   cpu: 100m
@@ -1370,9 +1454,6 @@ config:
     # For Airflow 1.10, backward compatibility; moved to [logging] in 2.0
     colored_console_log: 'False'
     remote_logging: '{{- ternary "True" "False" .Values.elasticsearch.enabled }}'
-  # Authentication backend used for the experimental API
-  api:
-    auth_backend: airflow.api.auth.backend.deny_all
   logging:
     remote_logging: '{{- ternary "True" "False" .Values.elasticsearch.enabled }}'
     colored_console_log: 'False'
@@ -1476,7 +1557,7 @@ dags:
     maxFailures: 0
     # subpath within the repo where dags are located
     # should be "" if dags are at repo root
-    subPath: "/dags"
+    subPath: "dags/"
     # if your repo needs a user name password
     # you can load them to a k8s secret like the one below
     #   ---
