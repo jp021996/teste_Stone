@@ -1,0 +1,7 @@
+apiVersion: v1
+kinf: ConfigMap
+metadata:
+	namespace: airflow
+	name: aiflow-connections
+data:
+	
