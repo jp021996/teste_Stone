@@ -31,10 +31,14 @@ def migrate_data_function(date):
         """
         curs.execute(query)
         query = """
-                SELECT * FROM postgres.public.tokens
+                SELECT *
+            FROM pg_catalog.pg_tables
+            WHERE schemaname != 'pg_catalog' AND 
+                schemaname != 'information_schema';
         """
         curs.execute(query)
         source = curs.fetchall()
+        logging.info(source)
     # bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
     # client = bq_hook.get_client()
     # logging.info(f'Data: {date}')
