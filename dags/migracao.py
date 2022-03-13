@@ -14,7 +14,7 @@ def migrate_data_function(date):
     cursor = conn.cursor()
     print(f'Data, {date}')
     QUERY = f"""
-        SELECT * FROM "bigquery-public-data.crypto_ethereum.tokens" WHERE CAST( block_timestamp as DATE) = "{date}"
+        SELECT * FROM 'bigquery-public-data.crypto_ethereum.tokens' WHERE CAST( block_timestamp as DATE) = '{date}'
     """
     result = cursor.execute(QUERY)
     print(result)
