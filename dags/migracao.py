@@ -30,6 +30,10 @@ def migrate_data_function(date):
             )
         """
         curs.execute(query)
+        query = """
+                SELECT * FROM postgres.public.tokens
+        """
+        curs.execute(query)
         source = curs.fetchall()
     # bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
     # client = bq_hook.get_client()
