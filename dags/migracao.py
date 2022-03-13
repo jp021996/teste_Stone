@@ -13,7 +13,7 @@ def migrate_data_function(date):
     bq_hook = BigQueryHook(bigquery_conn_id=BIGQUERYCONN)
     print(f'Data, {date}')
     QUERY = f"""
-        SELECT * FROM `bigquery-public-data.crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
+        SELECT * FROM `crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
     """
     df = bq_hook.get_pandas_df(QUERY)
     print(df)
