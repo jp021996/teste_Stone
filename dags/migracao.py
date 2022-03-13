@@ -19,7 +19,7 @@ def migrate_data_function(date):
     """
     # df = bq_hook.get_pandas_df(QUERY)
     data = client.query(QUERY)
-    print(data)
+    logging.info(data)
     # conn = bq_hook.get_conn()
     # cursor = conn.cursor()
     # result = cursor.execute(sql =QUERY)
