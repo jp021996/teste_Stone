@@ -17,16 +17,17 @@ def migrate_data_function(date):
     conn = pg_hook.get_conn()
     with conn.cursor() as curs: 
         query = """
-            CREATE table IF NOT EXISTS postgres.public.tokens
-            contract_id serial PRIMARY KEY,
-            address VARCHAR (255) NOT NULL,
-            symbol VARCHAR (50),
-            name VARCHAR (50),
-            decimals FLOAT,
-            total_supply FLOAT,
-            block_timestamp TIMESTAMP NOT NULL,
-            block_number INT NOT NULL,
-            block_hash VARCHAR (255) NOT NULL
+            CREATE table IF NOT EXISTS postgres.public.tokens (
+                contract_id serial PRIMARY KEY,
+                address VARCHAR (255) NOT NULL,
+                symbol VARCHAR (50),
+                name VARCHAR (50),
+                decimals FLOAT,
+                total_supply FLOAT,
+                block_timestamp TIMESTAMP NOT NULL,
+                block_number INT NOT NULL,
+                block_hash VARCHAR (255) NOT NULL
+            )
         """
         curs.execute(query)
         source = curs.fetchall()
