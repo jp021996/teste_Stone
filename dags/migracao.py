@@ -28,7 +28,7 @@ def migrate_data_function(date):
             block_number INT NOT NULL,
             block_hash VARCHAR (255) NOT NULL
         """
-        curs.excute(query)
+        curs.execute(query)
         source = curs.fetchall()
     # bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
     # client = bq_hook.get_client()
