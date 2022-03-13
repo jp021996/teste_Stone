@@ -18,7 +18,7 @@ def migrate_data_function(date):
     with conn.cursor() as curs: 
         query = """
             CREATE table IF NOT EXISTS postgres.public.tokens
-            id serial PRIMARY KEY,
+            contract_id serial PRIMARY KEY,
             address VARCHAR (255) NOT NULL,
             symbol VARCHAR (50),
             name VARCHAR (50),
