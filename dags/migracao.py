@@ -2,7 +2,6 @@ from airflow.models.dag import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.hooks.bigquery import BigQueryHook
-from airflow.contrib.operators.bigquery_get_data import BigQueryGetDataOperator
 # import pandas as pd
 import logging
 
@@ -12,15 +11,15 @@ BIGQUERYCONN = 'Big_Query_Conn'
 
 def migrate_data_function(date):
     bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
-    client = bq_hook.get_client()
-    print(f'Data, {date}')
+    client = bq_hook.get_client(project_id='bigquery-public-data')
+    logging.info(f'Data, {date}')
     QUERY = f"""
         SELECT * FROM `crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
     """
     # df = bq_hook.get_pandas_df(QUERY)
     data = client.query(QUERY)
     for row in data:
-        logging.info(row)
+        logging.info(row)   
     # conn = bq_hook.get_conn()
     # cursor = conn.cursor()
     # result = cursor.execute(sql =QUERY)
