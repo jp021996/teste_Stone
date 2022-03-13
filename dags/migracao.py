@@ -33,7 +33,7 @@ with DAG(
     migrate_data = PythonOperator(
         task_id='Migrate-Data',
         python_callable=migrate_data_function,
-        date = '{{ds}}'
+        op_args= ['{{ds}}']
     )
 
     start >> migrate_data >> end
