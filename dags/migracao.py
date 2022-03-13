@@ -2,28 +2,44 @@ from airflow.models.dag import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.hooks.bigquery import BigQueryHook
-# import pandas as pd
+from airflow.hooks.postgres_hook import PostgresHook
+
+
 import logging
 
 import datetime
 
 BIGQUERYCONN = 'Big_Query_Conn'
+POSTGRESQLCONN = 'PostgreSQL'
 
 def migrate_data_function(date):
-    bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
-    client = bq_hook.get_client()
-    logging.info(f'Data: {date}')
-    QUERY = f"""
-        SELECT * FROM `bigquery-public-data.crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
+    pg_hook = PostgresHook(postgre_conn_id=POSTGRESQLCONN, schema='public')
+    conn = pg_hook.get_conn()
+    cursor = conn.cursor()
+    query = """
+        CREATE table IF NOT EXISTS tokens
+        id serial PRIMARY KEY,
+        address VARCHAR (255) NOT NULL,
+        symbol VARCHAR (50),
+        name VARCHAR (50),
+        decimals FLOAT,
+        total_supply FLOAT,
+        block_timestamp TIMESTAMP NOT NULL,
+        block_number INT NOT NULL,
+        block_hash VARCHAR (255) NOT NULL
     """
-    # df = bq_hook.get_pandas_df(QUERY)
-    data = client.query(QUERY)
-    for row in data:
-        logging.info(row)   
-    # conn = bq_hook.get_conn()
-    # cursor = conn.cursor()
-    # result = cursor.execute(sql =QUERY)
-    # print(result)
+    cursor.excute()
+    source = cursor.fetchall()
+    # bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
+    # client = bq_hook.get_client()
+    # logging.info(f'Data: {date}')
+    # QUERY = f"""
+    #     SELECT * FROM `bigquery-public-data.crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
+    # """
+    # data = client.query(QUERY)
+    # for row in data:
+    #     logging.info(row)   
+    
 
 
 
