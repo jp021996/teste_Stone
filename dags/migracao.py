@@ -13,23 +13,23 @@ BIGQUERYCONN = 'Big_Query_Conn'
 POSTGRESQLCONN = 'PostgreSQL'
 
 def migrate_data_function(date):
-    pg_hook = PostgresHook(postgres_conn_id =POSTGRESQLCONN)
+    pg_hook = PostgresHook(POSTGRESQLCONN)
     conn = pg_hook.get_conn()
-    cursor = conn.cursor()
-    query = """
-        CREATE table IF NOT EXISTS postgres.public.tokens
-        id serial PRIMARY KEY,
-        address VARCHAR (255) NOT NULL,
-        symbol VARCHAR (50),
-        name VARCHAR (50),
-        decimals FLOAT,
-        total_supply FLOAT,
-        block_timestamp TIMESTAMP NOT NULL,
-        block_number INT NOT NULL,
-        block_hash VARCHAR (255) NOT NULL
-    """
-    cursor.excute(query)
-    source = cursor.fetchall()
+    with conn.cursor as cursor: 
+        query = """
+            CREATE table IF NOT EXISTS postgres.public.tokens
+            id serial PRIMARY KEY,
+            address VARCHAR (255) NOT NULL,
+            symbol VARCHAR (50),
+            name VARCHAR (50),
+            decimals FLOAT,
+            total_supply FLOAT,
+            block_timestamp TIMESTAMP NOT NULL,
+            block_number INT NOT NULL,
+            block_hash VARCHAR (255) NOT NULL
+        """
+        cursor.excute(query)
+        source = cursor.fetchall()
     # bq_hook = BigQueryHook(gcp_conn_id=BIGQUERYCONN)
     # client = bq_hook.get_client()
     # logging.info(f'Data: {date}')
