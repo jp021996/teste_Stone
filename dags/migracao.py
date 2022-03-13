@@ -14,7 +14,8 @@ POSTGRESQLCONN = 'PostgreSQL'
 
 def migrate_data_function(date):
     pg_hook = PostgresHook(postgres_conn_id =POSTGRESQLCONN)
-    cursor = pg_hook.get_conn().cursor()
+    conn = pg_hook.get_conn()
+    cursor = conn.cursor()
     query = """
         CREATE table IF NOT EXISTS postgres.public.tokens
         id serial PRIMARY KEY,
