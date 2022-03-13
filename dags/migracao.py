@@ -14,7 +14,7 @@ def migrate_data_function(date):
     client = bq_hook.get_client()
     logging.info(f'Data: {date}')
     QUERY = f"""
-        SELECT * FROM `bigquery-public-data:crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
+        SELECT * FROM `bigquery-public-data.crypto_ethereum.tokens` WHERE CAST( block_timestamp as DATE) = '{date}'
     """
     # df = bq_hook.get_pandas_df(QUERY)
     data = client.query(QUERY)
