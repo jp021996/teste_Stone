@@ -89,7 +89,7 @@ def migrate_data_function(date:str) -> None:
 with DAG(
     dag_id="tranfer-data-BigQuery-Postgresql",
     #8 days in the past to make the backfill for 7 days
-    start_date=datetime.datetime.now() - datetime.timedelta(days=8),
+    start_date=datetime.datetime.now() - datetime.timedelta(days=9),
     schedule_interval="@daily",
     catchup=True,
 ) as dag:
