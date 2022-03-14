@@ -49,8 +49,9 @@ def insert_data(pg_hook, row):
             logging.info(row)
             data = [item for item in row]
             logging.info(data)
-            pattern = r'\((.*?)\)'
-            data[5] = re.match(pattern, data[5])
+            # pattern = r'\((.*?)\)'
+            # data[5] = re.match(pattern, data[5])
+            data[5] = data[5].timestamp()
             query = f"""
                 INSERT INTO postgres.public.tokens 
                 (address, symbol, name, decimals, total_supply, block_timestamp, block_number, block_hash)
