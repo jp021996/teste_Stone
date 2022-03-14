@@ -37,7 +37,7 @@ def create_table(pg_hook):
             #         schemaname != 'information_schema';
             # """
             # curs.execute(query)
-            source = curs.fetchall()
+            # source = curs.fetchall()
             # logging.info(source)
 
 def insert_data(pg_hook, row):
