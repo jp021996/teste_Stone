@@ -45,6 +45,7 @@ def insert_data(pg_hook, row):
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
+            logging.info(row)
             query = f"""
                 INSERT INTO postgres.public.tokens 
                 (address, symbol, name, decimals, total_supply, block_timestamp, block_number, block_hash)
@@ -75,8 +76,8 @@ def migrate_data_function(date):
     logging.info(f'Getting data from BigQuery')
     data = client.query(QUERY)
     for row in data:
-        logging.info(row[0]) 
-        insert_data(pg_hook, row[0])
+        logging.info(row) 
+        insert_data(pg_hook, row)
     
 
 

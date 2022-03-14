@@ -35,5 +35,12 @@ Agora com a chave já transformada em um segredo e com os namespaces criados pod
 
   helm install airflow apache-airflow/airflow -f configuration/airflow_values.yaml -n airflow --debug --timeout 20m0s
   ```
+Após a instalção de ambos é necessário configurar as conexões do airflow, para isso antes e necessário fazer um port-fowarding para ter acesso ao webserver do airflow. Isso é feito utilizando o comando:
 
+  'kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow'
+
+Agora basta acessar o webserver do airfloe em localhost:8080.
+
+No local host é necessário configurar 2 conexões, a primeira será do postgresql onde os dados serão salvos, suas configurações são:
+  
 
