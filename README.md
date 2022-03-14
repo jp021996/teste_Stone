@@ -46,13 +46,13 @@ Acesse o webserver do airflow em localhost:8080.
 
 No local host é necessário configurar 2 conexões, a primeira será do postgresql onde os dados serão salvos. Suas configurações são:
 
-  Connection Id: PostgreSQL_Conn
-  Connection Type: Postgres
-  Host: postgresql.postgresql.svc.cluster.local
-  Schema: postgres
-  Login: airflow
-  Password: airflow
-  Port: 5432
+  - Connection Id: PostgreSQL_Conn
+  - Connection Type: Postgres
+  - Host: postgresql.postgresql.svc.cluster.local
+  - Schema: postgres
+  - Login: airflow
+  - Password: airflow
+  - Port: 5432
 
 A segunda configuração será do tipo google_cloud_platform, deverar ter o Conn_id, Big_Query_Conn e sua role deve possuir acesso de usuário no BigQuery
 
@@ -67,9 +67,9 @@ Para verificar se os dados estão disponíveis no banco postgreSQL é necessári
   ```
 
 Utilize um conector para o banco e verificar os dados, eu utilizei o Dbeaver para conecção, as configurações para conexão são:
-  host: localhost
-  port: 5432
-  database: postgres
-  user: airflow
-  password: airflow
+  - host: localhost
+  - port: 5432
+  - database: postgres
+  - user: airflow
+  - password: airflow
 
