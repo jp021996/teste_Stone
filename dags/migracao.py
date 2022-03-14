@@ -66,8 +66,7 @@ def insert_data(pg_hook, row):
             #         schemaname != 'information_schema';
             # """
             # curs.execute(query)
-            source = curs.fetchall()
-            logging.info(source)
+            conn.commit()
 
 def migrate_data_function(date):
     pg_hook = PostgresHook(POSTGRESQLCONN)
