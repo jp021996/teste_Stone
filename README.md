@@ -42,11 +42,13 @@ Após a instalção de ambos é necessário configurar as conexões do airflow, 
 Agora basta acessar o webserver do airfloe em localhost:8080.
 
 No local host é necessário configurar 2 conexões, a primeira será do postgresql onde os dados serão salvos, suas configurações são:
-  Connection Id:
-  Connection Type:
-  Host
-  Schema
-  Login
-  Password
-  Port
+  Connection Id: PostgreSQL_Conn
+  Connection Type: Postgres
+  Host: postgresql.postgresql.svc.cluster.local
+  Schema: postgres
+  Login: airflow
+  Password: airflow
+  Port: 5432
+
+A segunda configuração será do tipo google_cloud_platform, deverar ter o Conn_id, Big_Query_Conn e sua role deve possuir acesso de usuário no BigQuery
 
