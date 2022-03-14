@@ -46,7 +46,10 @@ def insert_data(pg_hook, row):
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
-            data = [item.replace("'","''") if item != None else 'NULL' for item in row]
+            data = [item if item != None else 'NULL' for item in row]
+            index = [0,1,2,5,7]
+            for i in index:
+                data[i] = data[i].replace("'", "''")
             # pattern = r'\((.*?)\)'
             # data[5] = re.match(pattern, data[5])
             data[5] = data[5].isoformat()
