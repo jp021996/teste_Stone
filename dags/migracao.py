@@ -13,6 +13,11 @@ BIGQUERYCONN = 'Big_Query_Conn'
 POSTGRESQLCONN = 'PostgreSQL_Conn'
 
 def create_table(pg_hook:object) -> None:
+    '''Create table if it not exists
+
+    Args:
+        pg_hook (object): hook of the database
+    '''
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs: 
             query = """
@@ -33,9 +38,15 @@ def create_table(pg_hook:object) -> None:
             conn.commit()
 
 def insert_data(pg_hook:object, row:object) -> None:
+    '''Insert data in database
+
+    Args:
+        pg_hook (object): hook of the database
+        row (object): row of data
+    '''
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
-            logging.info('Inserting row of data in postgresql')
+            logging.info('Inserting row of data in database')
             data = [item if item != None else 'NULL' for item in row]
             #Scaping aspostrophe, because some names and symbols can have it
             index = [1,2]
@@ -52,6 +63,11 @@ def insert_data(pg_hook:object, row:object) -> None:
             conn.commit()
 
 def migrate_data_function(date:str) -> None:
+    '''Main function that get the data from BigQuery and insert it into the database.
+
+    Args:
+        date (str): _description_
+    '''
     pg_hook = PostgresHook(POSTGRESQLCONN)
     
     create_table(pg_hook)
