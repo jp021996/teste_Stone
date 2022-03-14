@@ -46,11 +46,7 @@ def insert_data(pg_hook, row):
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
-            logging.info(row)
             data = [item if item != None else 'NULL' for item in row]
-            for i, z in enumerate(data):
-                logging.info(f'{i}: {z}')
-            logging.info(data)
             # pattern = r'\((.*?)\)'
             # data[5] = re.match(pattern, data[5])
             data[5] = data[5].isoformat()
@@ -93,7 +89,7 @@ with DAG(
     dag_id="tranfer-data-BigQuery-Postgresql",
     start_date=datetime.datetime.now() - datetime.timedelta(days=7),
     schedule_interval="@daily",
-    catchup=False,
+    catchup=True,
 ) as dag:
     start = DummyOperator(task_id='start')
     end = DummyOperator(task_id='end')
