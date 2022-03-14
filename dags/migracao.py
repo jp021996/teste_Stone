@@ -83,7 +83,7 @@ with DAG(
     dag_id="tranfer-data-BigQuery-Postgresql",
     start_date=datetime.datetime.now() - datetime.timedelta(days=7),
     schedule_interval="@daily",
-    catchup=True,
+    catchup=False,
 ) as dag:
     start = DummyOperator(task_id='start')
     end = DummyOperator(task_id='end')
