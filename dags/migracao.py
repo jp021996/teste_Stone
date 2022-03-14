@@ -46,14 +46,14 @@ def insert_data(pg_hook, row):
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
-            data = [item if item != None else 'NULL' for item in row]
+            data = [item.replace("'","''") if item != None else 'NULL' for item in row]
             # pattern = r'\((.*?)\)'
             # data[5] = re.match(pattern, data[5])
             data[5] = data[5].isoformat()
             query = f"""
                 INSERT INTO postgres.public.tokens 
                 (address, symbol, name, decimals, total_supply, block_timestamp, block_number, block_hash)
-                VALUES ("{data[0]}", "{data[1]}", "{data[2]}", {data[3]}, {data[4]}, "{data[5]}", {data[6]}, "{data[7]}")
+                VALUES ('{data[0]}', '{data[1]}', '{data[2]}', {data[3]}, {data[4]}, '{data[5]}', {data[6]}, '{data[7]}')
             """
             logging.info(query)
             curs.execute(query)
