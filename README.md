@@ -8,7 +8,8 @@ Após isso é necessário importar os repositórios helm com os comandos:
    
   ```
   helm repo add apache-airflow https://airflow.apache.org/
-  
+  ```
+  ```
   helm repo add bitnami https://charts.bitnami.com/bitnami
   ```
 
@@ -18,7 +19,8 @@ Após isso é necessário importar os repositórios helm com os comandos:
  
   ```
   kubectl create namespace airflow
-  
+  ```
+  ```
   kubectl create namespace postgresql
    ```
 
@@ -32,7 +34,8 @@ Agora com a chave já transformada em um segredo e com os namespaces criados pod
 
   ```
   helm install postgresql bitnami/postgresql --version 11.1.6 -f configuration/postgresql_values.yaml -n postgresql
-
+  ```
+  ```
   helm install airflow apache-airflow/airflow -f configuration/airflow_values.yaml -n airflow --debug --timeout 20m0s
   ```
 Após a instalção de ambos é necessário configurar as conexões do airflow, para isso antes e necessário fazer um port-fowarding para ter acesso ao webserver do airflow. Isso é feito utilizando o comando:
@@ -57,6 +60,8 @@ Após isto basta ligar a query que fará execução para os 7 dias anteriores.
 Para verificar se os dados estão disponíveis no banco postgreSQL é necessário executar o comando:
   ```
   kubectl port-forward --namespace postgresql svc/postgresql 5432:5432 &
+  ```
+  ```
   PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U airflow -d postgres -p 5432
   ```
 
