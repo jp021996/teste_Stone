@@ -53,7 +53,7 @@ def insert_data(pg_hook, row):
             query = f"""
                 INSERT INTO postgres.public.tokens 
                 (address, symbol, name, decimals, total_supply, block_timestamp, block_number, block_hash)
-                VALUES ('{data[0]}', '{data[1]}', '{data[2]}', {data[3]}, {data[4]}, '{data[5]}', {data[6]}, '{data[7]}')
+                VALUES ("{data[0]}", "{data[1]}", "{data[2]}", {data[3]}, {data[4]}, "{data[5]}", {data[6]}, "{data[7]}")
             """
             logging.info(query)
             curs.execute(query)
