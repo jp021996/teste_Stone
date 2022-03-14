@@ -3,7 +3,6 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.hooks.bigquery import BigQueryHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-import re
 
 
 import logging
@@ -13,7 +12,7 @@ import datetime
 BIGQUERYCONN = 'Big_Query_Conn'
 POSTGRESQLCONN = 'PostgreSQL_Conn'
 
-def create_table(pg_hook):
+def create_table(pg_hook:object) -> None:
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs: 
             query = """
@@ -32,27 +31,16 @@ def create_table(pg_hook):
             logging.info('Creating table if it doesnt exist')
             curs.execute(query)
             conn.commit()
-            # query = """
-            #         SELECT *
-            #     FROM pg_catalog.pg_tables
-            #     WHERE schemaname != 'pg_catalog' AND 
-            #         schemaname != 'information_schema';
-            # """
-            # curs.execute(query)
-            # source = curs.fetchall()
-            # logging.info(source)
 
-def insert_data(pg_hook, row):
+def insert_data(pg_hook:object, row:object) -> None:
     with pg_hook.get_conn() as conn:
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
             data = [item if item != None else 'NULL' for item in row]
+            #Scaping aspostrophe, because some names and symbols can have it
             index = [1,2]
             for i in index:
-                logging.info(type(data[i]))
                 data[i] = str(data[i]).replace("'", "''")
-            # pattern = r'\((.*?)\)'
-            # data[5] = re.match(pattern, data[5])
             data[5] = data[5].isoformat()
             query = f"""
                 INSERT INTO postgres.public.tokens 
@@ -61,16 +49,9 @@ def insert_data(pg_hook, row):
             """
             logging.info(query)
             curs.execute(query)
-            # query = """
-            #         SELECT *
-            #     FROM pg_catalog.pg_tables
-            #     WHERE schemaname != 'pg_catalog' AND 
-            #         schemaname != 'information_schema';
-            # """
-            # curs.execute(query)
             conn.commit()
 
-def migrate_data_function(date):
+def migrate_data_function(date:str) -> None:
     pg_hook = PostgresHook(POSTGRESQLCONN)
     
     create_table(pg_hook)
