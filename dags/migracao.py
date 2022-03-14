@@ -30,6 +30,7 @@ def create_table(pg_hook):
             """
             logging.info('Creating table if it doesnt exist')
             curs.execute(query)
+            conn.commit()
             # query = """
             #         SELECT *
             #     FROM pg_catalog.pg_tables
