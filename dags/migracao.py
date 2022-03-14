@@ -52,13 +52,13 @@ def insert_data(pg_hook, row):
             """
             logging.info(query)
             curs.execute(query)
-            query = """
-                    SELECT *
-                FROM pg_catalog.pg_tables
-                WHERE schemaname != 'pg_catalog' AND 
-                    schemaname != 'information_schema';
-            """
-            curs.execute(query)
+            # query = """
+            #         SELECT *
+            #     FROM pg_catalog.pg_tables
+            #     WHERE schemaname != 'pg_catalog' AND 
+            #         schemaname != 'information_schema';
+            # """
+            # curs.execute(query)
             source = curs.fetchall()
             logging.info(source)
 
@@ -75,8 +75,8 @@ def migrate_data_function(date):
     logging.info(f'Getting data from BigQuery')
     data = client.query(QUERY)
     for row in data:
-        logging.info(row) 
-        insert_data(pg_hook, row)
+        logging.info(row[0]) 
+        insert_data(pg_hook, row[0])
     
 
 
