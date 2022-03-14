@@ -26,7 +26,7 @@ Após isso é necessário importar os repositórios helm com os comandos:
 
 As DAGs do airflow são sincronizados com esse git, para tal é necessário criar um secret no kubernetes utilizando uma chave ssh, o qual já está ligado no git. Por motivos de segurança a chave será enviada via email. Após obter possuir a chave é necessário executar o seguinte comando:
 
-  'kubectl create secret generic airflow-ssh-git-secret -n airflow --from-file=gitSshKey=$PATHSsh'
+  `kubectl create secret generic airflow-ssh-git-secret -n airflow --from-file=gitSshKey=$PATHSsh`
   
 No qual o $PATHSsh é igual ao caminho para a chave privada.
 
@@ -40,7 +40,7 @@ Agora com a chave já transformada em um segredo e com os namespaces criados pod
   ```
 Após a instalção de ambos é necessário configurar as conexões do airflow, para isso antes e necessário fazer um port-fowarding para ter acesso ao webserver do airflow. Isso é feito utilizando o comando:
 
-  'kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow'
+  `kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow`
 
 Agora basta acessar o webserver do airfloe em localhost:8080.
 
