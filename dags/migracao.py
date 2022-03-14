@@ -48,6 +48,8 @@ def insert_data(pg_hook, row):
             logging.info('Inserting row of data in postgresql')
             logging.info(row)
             data = [item if item != None else 'NULL' for item in row]
+            for i, z in enumerate(data):
+                logging.info(f'{i}: {z}')
             logging.info(data)
             # pattern = r'\((.*?)\)'
             # data[5] = re.match(pattern, data[5])
