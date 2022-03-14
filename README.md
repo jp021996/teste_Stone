@@ -42,5 +42,11 @@ Após a instalção de ambos é necessário configurar as conexões do airflow, 
 Agora basta acessar o webserver do airfloe em localhost:8080.
 
 No local host é necessário configurar 2 conexões, a primeira será do postgresql onde os dados serão salvos, suas configurações são:
-  
+  Connection Id:
+  Connection Type:
+  Host
+  Schema
+  Login
+  Password
+  Port
 

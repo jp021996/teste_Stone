@@ -76,8 +76,8 @@ def migrate_data_function(date):
     logging.info(f'Getting data from BigQuery')
     data = client.query(QUERY)
     for row in data:
-        logging.info(row) 
-        insert_data(pg_hook, row)
+        logging.info(row[0]) 
+        insert_data(pg_hook, row[0])
     
 
 
