@@ -10,7 +10,7 @@ import logging
 import datetime
 
 BIGQUERYCONN = 'Big_Query_Conn'
-POSTGRESQLCONN = 'PostgreSQL'
+POSTGRESQLCONN = 'PostgreSQL_Conn'
 
 def create_table(pg_hook):
     with pg_hook.get_conn() as conn:

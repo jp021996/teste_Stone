@@ -163,7 +163,7 @@ replication:
 ## @param containerPorts.postgresql PostgreSQL container port
 ##
 containerPorts:
-  postgresql: 5532
+  postgresql: 5432
 ## Audit settings
 ## https://github.com/bitnami/bitnami-docker-postgresql#auditing
 ## @param audit.logHostname Log client hostnames
@@ -560,7 +560,7 @@ primary:
     ## @param primary.service.ports.postgresql PostgreSQL service port
     ##
     ports:
-      postgresql: 5532
+      postgresql: 5432
     ## Node ports to expose
     ## NOTE: choose port between <30000-32767>
     ## @param primary.service.nodePorts.postgresql Node port for PostgreSQL
@@ -870,7 +870,7 @@ readReplicas:
     ## @param readReplicas.service.ports.postgresql PostgreSQL service port
     ##
     ports:
-      postgresql: 5532
+      postgresql: 5432
     ## Node ports to expose
     ## NOTE: choose port between <30000-32767>
     ## @param readReplicas.service.nodePorts.postgresql Node port for PostgreSQL

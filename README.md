@@ -31,8 +31,9 @@ No qual o $PATHSsh é igual ao caminho para a chave privada.
 Agora com a chave já transformada em um segredo e com os namespaces criados pode-se intalar no kubernetes o airflow e o postgresql com os seguintes comandos:
 
   ```
-  helm install airflow apache-airflow/airflow -f configuration/airflow_values.yaml -n airflow --debug --timeout 20m0s
+  helm install postgresql bitnami/postgresql --version 11.1.6 -f configuration/postgresql_values.yaml -n postgresql
 
+  helm install airflow apache-airflow/airflow -f configuration/airflow_values.yaml -n airflow --debug --timeout 20m0s
   ```
 
 
