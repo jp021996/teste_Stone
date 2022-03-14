@@ -46,7 +46,7 @@ def insert_data(pg_hook, row):
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
             logging.info(row)
-            data = [item for item in row[0]]
+            data = [item for item in row]
             logging.info(data)
             query = f"""
                 INSERT INTO postgres.public.tokens 

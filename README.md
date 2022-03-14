@@ -52,3 +52,18 @@ No local host é necessário configurar 2 conexões, a primeira será do postgre
 
 A segunda configuração será do tipo google_cloud_platform, deverar ter o Conn_id, Big_Query_Conn e sua role deve possuir acesso de usuário no BigQuery
 
+Após isto basta ligar a query que fará execução para os 7 dias anteriores.
+
+Para verificar se os dados estão disponíveis no banco postgreSQL é necessário executar o comando:
+  ```
+  kubectl port-forward --namespace postgresql svc/postgresql 5432:5432 &
+  PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U airflow -d postgres -p 5432
+  ```
+
+Após isto basta usar um conector para o banco e verificar os dados, eu utilizei o Dbeaver para conecção, as configurações para conexão são:
+  host: localhost
+  port: 5432
+  database: postgres
+  user: airflow
+  password: airflow
+
