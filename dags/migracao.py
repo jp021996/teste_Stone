@@ -3,6 +3,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.hooks.bigquery import BigQueryHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+import re
 
 
 import logging
@@ -48,10 +49,12 @@ def insert_data(pg_hook, row):
             logging.info(row)
             data = [item for item in row]
             logging.info(data)
+            pattern = r'\((.*?)\)'
+            data[5] = re.match(pattern, data[5])
             query = f"""
                 INSERT INTO postgres.public.tokens 
                 (address, symbol, name, decimals, total_supply, block_timestamp, block_number, block_hash)
-                VALUES ({row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]})
+                VALUES ({data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]})
             """
             logging.info(query)
             curs.execute(query)
