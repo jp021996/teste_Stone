@@ -47,7 +47,7 @@ def insert_data(pg_hook, row):
         with conn.cursor() as curs:
             logging.info('Inserting row of data in postgresql')
             logging.info(row)
-            data = [item if item != None else '' for item in row]
+            data = [item if item != None else 'NULL' for item in row]
             logging.info(data)
             # pattern = r'\((.*?)\)'
             # data[5] = re.match(pattern, data[5])
